@@ -1,36 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* --- Sticky Header Logic --- */
     const stickyHeader = document.getElementById('stickyHeader');
-    // We consider the 'first fold' to be roughly 300px down 
-    // or past the main header height
+   
     const scrollThreshold = 300;
     let lastScrollY = window.scrollY;
 
     window.addEventListener('scroll', () => {
         const currentScrollY = window.scrollY;
 
-        // "appears when scrolling beyond the first fold"
-        // "disappear when scrolling back up"
+       
         if (currentScrollY > scrollThreshold) {
-            // Scrolling down or currently below threshold
             if (currentScrollY > lastScrollY) {
-                // Scrolling down -> show header
                 stickyHeader.classList.add('visible');
             } else {
-                // Scrolling up -> hide header as per requirements: "disappear when scrolling back up"
                 stickyHeader.classList.remove('visible');
             }
         } else {
-            // Above fold
             stickyHeader.classList.remove('visible');
         }
 
         lastScrollY = currentScrollY;
     });
 
-    /* --- Image Carousel Logic --- */
-    // Dummy images for carousel
+   
     const images = [
         "https://images.unsplash.com/photo-1541888087618-97a61d6ce3c8?auto=format&fit=crop&q=80&w=800",
         "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=800",
@@ -46,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
-    // Create thumbnails dynamically
     images.forEach((src, index) => {
         const thumbBtn = document.createElement('button');
         thumbBtn.classList.add('thumb');
@@ -69,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentIndex = index;
         mainImage.src = images[currentIndex];
 
-        // Update active thumbnail
         document.querySelectorAll('.thumb').forEach((thumb, idx) => {
             if (idx === currentIndex) {
                 thumb.classList.add('active');
@@ -78,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Preload zoom result image so it's ready on hover
         zoomResult.style.backgroundImage = `url("${images[currentIndex]}")`;
     }
 
@@ -94,19 +83,15 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMainImage(newIndex);
     });
 
-    /* --- Image Zoom Logic --- */
     const mainImageContainer = document.getElementById('mainImageContainer');
     const mainImageWrapper = document.querySelector('.main-image-wrapper');
     const zoomResult = document.getElementById('zoomResult');
     const zoomLens = document.getElementById('zoomLens');
 
-    // Initialize zoom result background
     zoomResult.style.backgroundImage = `url("${images[currentIndex]}")`;
-    // We want the zoom result to show a 2x scaled image for example
     const scale = 2;
 
     mainImageContainer.addEventListener('mouseenter', () => {
-        // Show result box and lens
         if (window.innerWidth > 992) {
             mainImageWrapper.classList.add('zoom-active');
             zoomLens.style.visibility = 'visible';
@@ -116,45 +101,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     mainImageContainer.addEventListener('mouseleave', () => {
-        // Hide result box and lens
         mainImageWrapper.classList.remove('zoom-active');
         zoomLens.style.visibility = 'hidden';
         zoomLens.style.opacity = '0';
     });
 
     mainImageContainer.addEventListener('mousemove', (e) => {
-        // Only run if active
         if (!mainImageWrapper.classList.contains('zoom-active')) return;
 
         const bounds = mainImage.getBoundingClientRect();
 
-        // Get cursor position relative to image
+      
         let x = e.clientX - bounds.left;
         let y = e.clientY - bounds.top;
 
-        // Take lens size into account to center it on cursor
         const lensWidth = zoomLens.offsetWidth;
         const lensHeight = zoomLens.offsetHeight;
 
-        // Prevent lens from going outside the image bounds
-        // Left constraint
+       
         if (x < lensWidth / 2) x = lensWidth / 2;
-        // Right constraint
         if (x > bounds.width - lensWidth / 2) x = bounds.width - lensWidth / 2;
-        // Top constraint
         if (y < lensHeight / 2) y = lensHeight / 2;
-        // Bottom constraint
         if (y > bounds.height - lensHeight / 2) y = bounds.height - lensHeight / 2;
 
-        // Position the lens
         zoomLens.style.left = `${x - lensWidth / 2}px`;
         zoomLens.style.top = `${y - lensHeight / 2}px`;
 
-        // Calculate positions for the zoomed result background
-        // The background position needs to be moved in the opposite direction
-        // mapping the lens position (0 to ImageSize - LensSize) 
-        // to the background position (0 to BackgroundSize - ResultSize)
-
+       
         const bgX = (x - lensWidth / 2) * scale;
         const bgY = (y - lensHeight / 2) * scale;
 
@@ -173,12 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('modal-open');
     });
 
-    // Close Modal when clicking close button
     closeModalBtn.addEventListener('click', () => {
         closeModal();
     });
 
-    // Close Modal when clicking outside the content box
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             closeModal();
@@ -254,19 +225,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* --- FAQ Accordion Logic --- */
     const faqItems = document.querySelectorAll('.faq-item');
 
     faqItems.forEach(item => {
         const questionBtn = item.querySelector('.faq-question');
         questionBtn.addEventListener('click', () => {
-            // Check if current is active
             const isActive = item.classList.contains('active');
 
             // Close all
             faqItems.forEach(faq => faq.classList.remove('active'));
 
-            // If it wasn't active, open it
             if (!isActive) {
                 item.classList.add('active');
             }
@@ -337,7 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const timelineSteps = document.querySelectorAll('.timeline-step');
     const processContents = document.querySelectorAll('.process-step-content');
 
-    // Add dummy content generator for missing steps (steps 3-8) so it doesn't break
     const contentArea = document.getElementById('processContentArea');
     if (contentArea && timelineSteps.length > 2) {
         for (let i = 3; i <= 8; i++) {
